@@ -1,4 +1,6 @@
 import { StyleSheet } from "react-native";
+import { colors } from "../../constants/Colors";
+import { withAlpha } from "../../utils/Color_helper";
 
 export const styles = StyleSheet.create({
   container: {
@@ -6,30 +8,44 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#FEFAE0",
+    backgroundColor: withAlpha(colors.clay, 0.5),
   },
   title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 40,
-    color: "#606C38",
+    fontSize: 24,
+    fontWeight: "600",
+    fontFamily: "Poppins600",
+    color: colors.text,
   },
   button: {
-    backgroundColor: "#1e88e5",
-    paddingVertical: 12,
+    backgroundColor: colors.darkOlive,
+    paddingVertical: 16,
     paddingHorizontal: 24,
-    borderRadius: 8,
-    marginBottom: 20,
+    borderRadius: 12,
+    marginVertical: 30,
+    alignItems: "center",
+    width: "100%",
   },
   buttonText: {
-    color: "#fff",
     fontSize: 16,
     fontWeight: "600",
+    fontFamily: "Poppins600",
+    color: colors.white,
   },
   footer: {
     fontSize: 12,
-    color: "#888",
+    color: colors.white,
     textAlign: "center",
+  },
+  logo: {
     marginTop: 20,
+  },
+  imageWrapper: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  link: {
+    color: colors.darkOlive,
+    textDecorationLine: "underline",
   },
 });

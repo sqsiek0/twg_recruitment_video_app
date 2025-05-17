@@ -1,5 +1,21 @@
 {
   "expo": {
+    "packagerOpts": {
+      "config": "metro.config.js",
+      "sourceExts": [
+        "expo.ts",
+        "expo.tsx",
+        "expo.js",
+        "expo.jsx",
+        "ts",
+        "tsx",
+        "js",
+        "jsx",
+        "json",
+        "wasm",
+        "svg"
+      ]
+    },
     "name": "twg_recruitment_video_app",
     "slug": "twg_recruitment_video_app",
     "version": "1.0.0",
@@ -24,6 +40,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "assetBundlePatterns": [
+      "assets/fonts/*"
+    ],
+    "plugins": [
+      "expo-font"
+    ]
   }
 }
