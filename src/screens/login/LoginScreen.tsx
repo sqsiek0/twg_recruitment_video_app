@@ -28,7 +28,7 @@ export default function LoginScreen({ navigation }: Props) {
 
       <TouchableOpacity
         style={styles.button}
-        onPress={() => navigation.replace("Home")}
+        onPress={() => navigation.replace("Main")}
       >
         <Text style={styles.buttonText}>Log in as guest</Text>
       </TouchableOpacity>
