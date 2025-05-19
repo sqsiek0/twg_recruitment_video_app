@@ -100,3 +100,12 @@ Here, we fetch a larger set of videos, but not all of them are displayed because
 </p>
 
 ------
+
+## Whole app presentation
+
+The lag is due to the GIF being limited to 5 FPS.
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/a7705106-6c28-439b-8ecc-40b71a5c4166" alt="Alt Text"; object-fit: contain;">
+</p>
+
