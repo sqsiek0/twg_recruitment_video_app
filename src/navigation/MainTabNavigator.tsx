@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Platform, StyleSheet, View, Text } from "react-native";
 import { colors } from "../constants/Colors";
 import { HomeScreen } from "../screens/home/HomeScreen";
+import { SearchScreen } from "../screens/search/SearchScreen";
 import { SvgProps } from "react-native-svg";
 
 // Importujemy ikony
@@ -11,7 +12,7 @@ import SearchIcon from "../assets/images/search-icon.svg";
 
 export type MainTabParamList = {
   HomeTab: undefined;
-  SearchTab: undefined;
+  SearchTab: { query: string; maxResults?: number };
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -41,6 +42,7 @@ export default function MainTabNavigator() {
         tabBarActiveTintColor: colors.oliveGreen,
         tabBarInactiveTintColor: colors.text,
         tabBarStyle: styles.tabBar,
+        animation: "shift",
         tabBarLabel: ({ focused, color }) => (
           <Text
             style={[
@@ -51,22 +53,13 @@ export default function MainTabNavigator() {
               },
             ]}
           >
-            {route.name === "HomeTab" ? "Główna" : "Ulubione"}
+            {route.name === "HomeTab" ? "Home" : "Search"}
           </Text>
         ),
       })}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
-      <Tab.Screen
-        name="SearchTab"
-        component={() => (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <Text>Ulubione</Text>
-          </View>
-        )}
-      />
+      <Tab.Screen name="SearchTab" component={SearchScreen} />
     </Tab.Navigator>
   );
 }
@@ -75,7 +68,7 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: colors.white,
     borderTopWidth: 1,
-    borderTopColor: "rgba(0, 0, 0, 0.1)",
+    borderTopColor: colors.text,
     paddingBottom: Platform.OS === "ios" ? 20 : 10,
     paddingTop: 10,
     height: Platform.OS === "ios" ? 85 : 65,

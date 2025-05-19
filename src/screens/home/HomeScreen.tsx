@@ -4,11 +4,9 @@ import { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 import {
   View,
   Text,
-  StyleSheet,
   FlatList,
   Image,
   TouchableOpacity,
-  Dimensions,
   ActivityIndicator,
 } from "react-native";
 import { RootStackParamList } from "../../navigation/AppNavigator";
@@ -43,12 +41,9 @@ const fallbackVideoData: VideoItem[] = [
 
 export function HomeScreen({ navigation }: Props) {
   const [reactNativeVideos, setReactNativeVideos] = useState<VideoItem[]>([]);
-  const [reactVideos, setReactVideos] = useState<VideoItem[]>([
-    ...fallbackVideoData,
-  ]);
-  const [typescriptVideos, setTypescriptVideos] = useState<VideoItem[]>([
-    ...fallbackVideoData,
-  ]);
+  const [reactVideos, setReactVideos] = useState<VideoItem[]>([]);
+  const [typescriptVideos, setTypescriptVideos] = useState<VideoItem[]>([]);
+  const [javascriptVideos, setJavascriptVideos] = useState<VideoItem[]>([]);
 
   const {
     data: reactNativeData,
@@ -56,29 +51,44 @@ export function HomeScreen({ navigation }: Props) {
     error: reactNativeError,
   } = useCategoryVideos("React Native tutorials");
 
-  //   const {
-  //     data: reactData,
-  //     isLoading: isLoadingReact,
-  //     error: reactError,
-  //   } = useCategoryVideos("React tutorials");
+  const {
+    data: reactData,
+    isLoading: isLoadingReact,
+    error: reactError,
+  } = useCategoryVideos("React tutorials");
 
-  //   const {
-  //     data: typescriptData,
-  //     isLoading: isLoadingTypescript,
-  //     error: typescriptError,
-  //   } = useCategoryVideos("Typescript tutorials");
+  const {
+    data: typescriptData,
+    isLoading: isLoadingTypescript,
+    error: typescriptError,
+  } = useCategoryVideos("Typescript tutorials");
+
+  const {
+    data: javascriptData,
+    isLoading: isLoadingJavascript,
+    error: javascriptError,
+  } = useCategoryVideos("Javascript tutorials");
 
   useEffect(() => {
     if (reactNativeData) {
-      setReactNativeVideos(reactNativeData.map(mapYouTubeVideoToVideoItem));
+      setReactNativeVideos(
+        reactNativeData.videos.map(mapYouTubeVideoToVideoItem)
+      );
     }
-    //   if (reactData) {
-    //     setReactVideos(reactData.map(mapYouTubeVideoToVideoItem));
-    //   }
-    //   if (typescriptData) {
-    //     setTypescriptVideos(typescriptData.map(mapYouTubeVideoToVideoItem));
-    //   }
-  }, [reactNativeData]);
+    if (reactData) {
+      setReactVideos(reactData.videos.map(mapYouTubeVideoToVideoItem));
+    }
+    if (typescriptData) {
+      setTypescriptVideos(
+        typescriptData.videos.map(mapYouTubeVideoToVideoItem)
+      );
+    }
+    if (javascriptData) {
+      setJavascriptVideos(
+        javascriptData.videos.map(mapYouTubeVideoToVideoItem)
+      );
+    }
+  }, [reactNativeData, reactData, typescriptData, javascriptData]);
 
   const goToVideoDetails = (videoId: string) => {
     navigation.navigate("VideoDetailsScreen", { videoId });
@@ -131,7 +141,11 @@ export function HomeScreen({ navigation }: Props) {
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>{title}</Text>
-        <TouchableOpacity onPress={() => console.log("Show more pressed")}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("SearchTab", { query: title, maxResults: 50 })
+          }
+        >
           <Text style={styles.sectionAction}>Show more</Text>
         </TouchableOpacity>
       </View>
@@ -182,10 +196,8 @@ export function HomeScreen({ navigation }: Props) {
             {renderSection(
               "React",
               reactVideos.length > 0 ? reactVideos : fallbackVideoData,
-              //   isLoadingReact,
-              //   reactError
-              false,
-              null
+              isLoadingReact,
+              reactError
             )}
 
             {renderSection(
@@ -193,10 +205,16 @@ export function HomeScreen({ navigation }: Props) {
               typescriptVideos.length > 0
                 ? typescriptVideos
                 : fallbackVideoData,
-              //   isLoadingTypescript,
-              //   typescriptError
-              false,
-              null
+              isLoadingTypescript,
+              typescriptError
+            )}
+            {renderSection(
+              "JavaScript",
+              javascriptVideos.length > 0
+                ? javascriptVideos
+                : fallbackVideoData,
+              isLoadingJavascript,
+              javascriptError
             )}
           </View>
         )}
