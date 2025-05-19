@@ -70,7 +70,9 @@ export function HomeScreen({ navigation }: Props) {
 
   useEffect(() => {
     if (reactNativeData) {
-      setReactNativeVideos(reactNativeData.map(mapYouTubeVideoToVideoItem));
+      setReactNativeVideos(
+        reactNativeData.videos.map(mapYouTubeVideoToVideoItem)
+      );
     }
     //   if (reactData) {
     //     setReactVideos(reactData.map(mapYouTubeVideoToVideoItem));

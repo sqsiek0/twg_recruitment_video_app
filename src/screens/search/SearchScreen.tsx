@@ -33,21 +33,36 @@ export const SearchScreen: React.FC = () => {
 
   const [searchQuery, setSearchQuery] = useState(initialQuery);
   const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [totalResults, setTotalResults] = useState<number>(0);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [sortOption, setSortOption] = useState("Most popular");
+  const [orderParam, setOrderParam] = useState("viewCount");
+  const [reverseChronology, setReverseChronology] = useState(false);
 
   const {
     data: searchData,
     isLoading,
     error,
     refetch,
-  } = useSearchVideos(searchQuery, initialMaxResults);
+  } = useSearchVideos(
+    searchQuery,
+    initialMaxResults,
+    orderParam,
+    reverseChronology
+  );
 
   React.useEffect(() => {
     if (searchData) {
-      setVideos(searchData.map(mapYouTubeVideoToVideoItem));
+      setVideos(searchData.videos.map(mapYouTubeVideoToVideoItem));
+      setTotalResults(searchData.totalResults);
     }
   }, [searchData]);
+
+  React.useEffect(() => {
+    if (initialQuery) {
+      refetch();
+    }
+  }, [initialQuery, refetch]);
 
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
@@ -63,6 +78,38 @@ export const SearchScreen: React.FC = () => {
   const handleSortOptionSelect = (option: string) => {
     setSortOption(option);
     setIsModalVisible(false);
+
+    let newOrderParam = "viewCount";
+    let newReverseChronology = false;
+
+    switch (option) {
+      case "Upload date: latest":
+        newOrderParam = "date";
+        newReverseChronology = false;
+        break;
+      case "Upload date: oldest":
+        newOrderParam = "date";
+        newReverseChronology = true;
+        break;
+      case "Most popular":
+        newOrderParam = "viewCount";
+        newReverseChronology = false;
+        break;
+      default:
+        newOrderParam = "relevance";
+        newReverseChronology = false;
+    }
+
+    if (
+      newOrderParam !== orderParam ||
+      newReverseChronology !== reverseChronology
+    ) {
+      setOrderParam(newOrderParam);
+      setReverseChronology(newReverseChronology);
+      if (searchQuery.trim() !== "") {
+        setTimeout(() => refetch(), 100);
+      }
+    }
   };
 
   const renderVideoItem = ({ item }: { item: VideoItem }) => (
@@ -91,7 +138,7 @@ export const SearchScreen: React.FC = () => {
         <StatusBar style="auto" />
         <View style={styles.resultsWrapper}>
           <Text style={styles.resultsText}>
-            {videos.length} results found for: "{searchQuery || "React Native"}"
+            {totalResults} results found for: "{searchQuery || "React Native"}"
           </Text>
         </View>
         <TouchableOpacity onPress={handleSortPress} style={styles.sortWrapper}>

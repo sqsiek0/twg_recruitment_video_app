@@ -32,15 +32,19 @@ const VideoCard: React.FC<Props> = ({ item, onPress }) => (
 const styles = StyleSheet.create({
   container: {
     backgroundColor: colors.white,
-    borderRadius: 8,
+    borderRadius: 12,
     overflow: "hidden",
     marginBottom: 24,
+    boxShadow: "0 0px 1px rgba(0, 0, 0, 0.01)",
+    shadowOffset: {
+      width: 0,
+      height: 1,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
 
-    elevation: 2,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.22,
-    shadowRadius: 2.22,
   },
   thumbnail: {
     width: "100%",

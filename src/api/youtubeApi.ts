@@ -15,6 +15,7 @@ const youtubeClient = axios.create({
 });
 
 export interface YouTubeVideo {
+  
   id: string;
   title: string;
   description: string;
@@ -30,6 +31,11 @@ export interface YouTubeVideo {
     likeCount?: string;
   };
   tags?: string[];
+}
+
+export interface SearchVideosResult {
+  videos: YouTubeVideo[];
+  totalResults: number;
 }
 
 export interface YouTubeSearchResponse {
@@ -73,21 +79,33 @@ const mapSearchResultToVideo = (item: any): YouTubeVideo => {
 };
 
 export const youtubeApi = {
-  searchVideos: async (query: string, maxResults: number = 10, pageToken?: string): Promise<YouTubeVideo[]> => {
+  searchVideos: async (query: string, maxResults: number = 10, pageToken?: string, order?: string, publishedBefore?: string): Promise<SearchVideosResult> => {
     try {
+      const params: any = {
+        q: query,
+        maxResults,
+        pageToken,
+        type: 'video',
+        order: order || 'viewCount',
+      };
+      
+      if (publishedBefore) {
+        params.publishedBefore = publishedBefore;
+      }
+      
       const response = await youtubeClient.get('/search', {
-        params: {
-          q: query,
-          maxResults,
-          pageToken,
-          type: 'video',
-        },
+        params: params,
       });
 
       const data = response.data as YouTubeSearchResponse;
-      return data.items
+      const videos = data.items
         .filter(item => item.id.videoId)
         .map(mapSearchResultToVideo);
+      
+      return {
+        videos,
+        totalResults: data.pageInfo.totalResults
+      };
     } catch (error) {
       console.error('Error fetching YouTube videos:', error);
       throw error;
@@ -115,6 +133,7 @@ export const youtubeApi = {
           thumbnails: item.snippet.thumbnails,
           channelTitle: item.snippet.channelTitle,
           tags: item.snippet.tags || [],
+          
           statistics: item.statistics || {
             viewCount: "0",
             likeCount: "0",
