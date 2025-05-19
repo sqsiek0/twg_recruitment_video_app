@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Platform, StyleSheet, View, Text } from "react-native";
 import { colors } from "../constants/Colors";
 import { HomeScreen } from "../screens/home/HomeScreen";
+import { SearchScreen } from "../screens/search/SearchScreen";
 import { SvgProps } from "react-native-svg";
 
 // Importujemy ikony
@@ -52,22 +53,13 @@ export default function MainTabNavigator() {
               },
             ]}
           >
-            {route.name === "HomeTab" ? "Główna" : "Ulubione"}
+            {route.name === "HomeTab" ? "Home" : "Search"}
           </Text>
         ),
       })}
     >
       <Tab.Screen name="HomeTab" component={HomeScreen} />
-      <Tab.Screen
-        name="SearchTab"
-        component={() => (
-          <View
-            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
-          >
-            <Text>Ulubione</Text>
-          </View>
-        )}
-      />
+      <Tab.Screen name="SearchTab" component={SearchScreen} />
     </Tab.Navigator>
   );
 }
