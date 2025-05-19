@@ -68,6 +68,12 @@ export const SearchScreen: React.FC = () => {
   }, [initialQuery, refetch]);
 
   React.useEffect(() => {
+    if (route.params?.query && route.params.query !== searchQuery) {
+      setSearchQuery(route.params.query);
+    }
+  }, [route.params?.query]);
+
+  React.useEffect(() => {
     if (debouncedSearchQuery && debouncedSearchQuery.trim() !== "") {
       refetch();
     }
