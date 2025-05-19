@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   View,
   SafeAreaView,
@@ -9,8 +9,18 @@ import {
 import { colors } from "../../constants/Colors";
 import SearchIcon from "../../assets/images/search-icon.svg";
 import SettingsIcon from "../../assets/images/settings-icon.svg";
+import { useNavigation } from "@react-navigation/native";
 
 export default function HomeHeader() {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigation = useNavigation();
+
+  const handleSearch = () => {
+    if (searchQuery.trim().length > 0) {
+      console.log("Szukaj:", searchQuery);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <View style={styles.container}>
@@ -23,6 +33,10 @@ export default function HomeHeader() {
             style={styles.searchInput}
             placeholder="Szukaj filmów..."
             placeholderTextColor="#888"
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            onSubmitEditing={handleSearch}
+            returnKeyType="search"
           />
         </View>
 
@@ -47,6 +61,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 15,
     justifyContent: "space-between",
+    borderBottomColor: colors.text,
+    borderBottomWidth: 1,
   },
   searchContainer: {
     flex: 1,
