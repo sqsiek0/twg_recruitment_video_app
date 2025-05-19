@@ -35,7 +35,7 @@ export default function HomeHeader() {
 
           <TextInput
             style={styles.searchInput}
-            placeholder="Szukaj filmów..."
+            placeholder="Search videos..."
             placeholderTextColor="#888"
             value={searchQuery}
             onChangeText={setSearchQuery}

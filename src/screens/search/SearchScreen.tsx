@@ -139,7 +139,7 @@ export const SearchScreen: React.FC = () => {
           </View>
           <TextInput
             style={styles.searchInput}
-            placeholder="Szukaj filmów..."
+            placeholder="Search videos..."
             placeholderTextColor="#888"
             value={searchQuery}
             onChangeText={setSearchQuery}
@@ -165,7 +165,7 @@ export const SearchScreen: React.FC = () => {
             <ActivityIndicator size="large" color={colors.oliveGreen} />
           ) : error ? (
             <Text style={styles.placeholderText}>
-              Wystąpił błąd podczas wyszukiwania.
+              An error occurred while fetching data.
             </Text>
           ) : videos.length > 0 ? (
             <FlatList
@@ -176,7 +176,7 @@ export const SearchScreen: React.FC = () => {
             />
           ) : (
             <Text style={styles.placeholderText}>
-              Brak wyników wyszukiwania.
+              No results found for "{searchQuery}"
             </Text>
           )}
         </View>
