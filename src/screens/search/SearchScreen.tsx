@@ -1,12 +1,73 @@
 import React, { useState } from "react";
-import { View, StyleSheet, TextInput, SafeAreaView, Text } from "react-native";
+import {
+  View,
+  StyleSheet,
+  TextInput,
+  SafeAreaView,
+  Text,
+  Modal,
+  Pressable,
+} from "react-native";
 import { colors } from "../../constants/Colors";
 import { StatusBar } from "expo-status-bar";
 import { Platform } from "react-native";
 import SearchIcon from "../../assets/images/search-icon.svg";
+import { useRoute, RouteProp } from "@react-navigation/native";
+import { MainTabParamList } from "../../navigation/MainTabNavigator";
+import { useSearchVideos } from "../../api/youtubeHooks";
+import { VideoItem, mapYouTubeVideoToVideoItem } from "../../api/videoMapper";
+import {
+  FlatList,
+  Image,
+  TouchableOpacity,
+  ActivityIndicator,
+} from "react-native";
+import VideoCard from "./components/VideoCard";
+
+type SearchScreenRouteProp = RouteProp<MainTabParamList, "SearchTab">;
 
 export const SearchScreen: React.FC = () => {
-  const [searchQuery, setSearchQuery] = useState("");
+  const route = useRoute<SearchScreenRouteProp>();
+  const initialQuery = route.params?.query || "";
+  const initialMaxResults = route.params?.maxResults || undefined;
+
+  const [searchQuery, setSearchQuery] = useState(initialQuery);
+  const [videos, setVideos] = useState<VideoItem[]>([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [sortOption, setSortOption] = useState("Most popular");
+
+  const {
+    data: searchData,
+    isLoading,
+    error,
+    refetch,
+  } = useSearchVideos(searchQuery, initialMaxResults);
+
+  React.useEffect(() => {
+    if (searchData) {
+      setVideos(searchData.map(mapYouTubeVideoToVideoItem));
+    }
+  }, [searchData]);
+
+  const handleSearch = () => {
+    if (searchQuery.trim() !== "") {
+      // @ts-ignore
+      refetch();
+    }
+  };
+
+  const handleSortPress = () => {
+    setIsModalVisible(true);
+  };
+
+  const handleSortOptionSelect = (option: string) => {
+    setSortOption(option);
+    setIsModalVisible(false);
+  };
+
+  const renderVideoItem = ({ item }: { item: VideoItem }) => (
+    <VideoCard item={item} onPress={() => {}} />
+  );
 
   return (
     <SafeAreaView style={styles.safeArea}>
@@ -22,24 +83,100 @@ export const SearchScreen: React.FC = () => {
             value={searchQuery}
             onChangeText={setSearchQuery}
             returnKeyType="search"
+            onSubmitEditing={handleSearch}
           />
         </View>
       </View>
       <View style={styles.container}>
         <StatusBar style="auto" />
-        <View style={styles.resultsHeader}>
+        <View style={styles.resultsWrapper}>
           <Text style={styles.resultsText}>
-            {searchQuery ? `Wyniki wyszukiwania dla: "${searchQuery}"` : "1157 results found for: \"React Native\""}
+            {videos.length} results found for: "{searchQuery || "React Native"}"
           </Text>
-          <View style={styles.sortContainer}>
-            <Text style={styles.sortLabel}>Sort by:</Text>
-            <Text style={styles.sortValue}>Most popular</Text>
-          </View>
         </View>
+        <TouchableOpacity onPress={handleSortPress} style={styles.sortWrapper}>
+          <Text style={styles.sortText}>Sort by: </Text>
+          <Text style={styles.sortValue}>{sortOption}</Text>
+        </TouchableOpacity>
         <View style={styles.content}>
-          <Text style={styles.placeholderText}>Tutaj będą wyniki wyszukiwania</Text>
+          {isLoading ? (
+            <ActivityIndicator size="large" color={colors.oliveGreen} />
+          ) : error ? (
+            <Text style={styles.placeholderText}>
+              Wystąpił błąd podczas wyszukiwania.
+            </Text>
+          ) : videos.length > 0 ? (
+            <FlatList
+              data={videos}
+              renderItem={renderVideoItem}
+              keyExtractor={(item) => item.id}
+              style={styles.list}
+            />
+          ) : (
+            <Text style={styles.placeholderText}>
+              Brak wyników wyszukiwania.
+            </Text>
+          )}
         </View>
       </View>
+
+      <Modal
+        visible={isModalVisible}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <Pressable
+          style={styles.modalOverlay}
+          onPress={() => setIsModalVisible(false)}
+        >
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Sort records by:</Text>
+            <TouchableOpacity
+              style={styles.sortOption}
+              onPress={() => handleSortOptionSelect("Upload date: latest")}
+            >
+              <View style={styles.radioButton}>
+                {sortOption === "Upload date: latest" && (
+                  <View style={styles.radioButtonInner} />
+                )}
+              </View>
+              <Text style={styles.sortOptionText}>Upload date: latest</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.sortOption}
+              onPress={() => handleSortOptionSelect("Upload date: oldest")}
+            >
+              <View style={styles.radioButton}>
+                {sortOption === "Upload date: oldest" && (
+                  <View style={styles.radioButtonInner} />
+                )}
+              </View>
+              <Text style={styles.sortOptionText}>Upload date: oldest</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.sortOption}
+              onPress={() => handleSortOptionSelect("Most popular")}
+            >
+              <View style={styles.radioButton}>
+                {sortOption === "Most popular" && (
+                  <View style={styles.radioButtonInner} />
+                )}
+              </View>
+              <Text style={styles.sortOptionText}>Most popular</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={styles.confirmButton}
+              onPress={() => setIsModalVisible(false)}
+            >
+              <Text style={styles.confirmButtonText}>Confirm</Text>
+            </TouchableOpacity>
+          </View>
+        </Pressable>
+      </Modal>
     </SafeAreaView>
   );
 };
@@ -56,18 +193,18 @@ const styles = StyleSheet.create({
     paddingVertical: 15,
     borderBottomColor: colors.text,
     borderBottomWidth: 1,
+    backgroundColor: colors.cream,
   },
   container: {
     flex: 1,
-    backgroundColor: colors.white,
-    paddingHorizontal: 16,
+    backgroundColor: colors.cream,
   },
   searchContainer: {
     flex: 1,
     flexDirection: "row",
     alignItems: "center",
     backgroundColor: colors.cream,
-    borderRadius: 16,
+    borderRadius: 22,
     borderWidth: 1,
     borderColor: colors.text,
     height: 44,
@@ -87,31 +224,34 @@ const styles = StyleSheet.create({
     height: "100%",
     fontFamily: "Poppins400",
     fontSize: 16,
+    color: colors.text,
   },
-  resultsHeader: {
+  resultsWrapper: {
+    paddingTop: 16,
+    paddingHorizontal: 16,
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginVertical: 15,
   },
   resultsText: {
     fontFamily: "Poppins400",
-    fontSize: 14,
+    fontSize: 10,
     color: colors.text,
   },
-  sortContainer: {
+  sortWrapper: {
     flexDirection: "row",
-    alignItems: "center",
+    alignItems: "flex-end",
+    alignSelf: "flex-end",
+    paddingHorizontal: 16,
   },
-  sortLabel: {
+  sortText: {
     fontFamily: "Poppins400",
-    fontSize: 14,
+    fontSize: 12,
     color: colors.text,
-    marginRight: 5,
   },
   sortValue: {
     fontFamily: "Poppins600",
-    fontSize: 14,
+    fontSize: 12,
     color: colors.text,
   },
   content: {
@@ -123,5 +263,104 @@ const styles = StyleSheet.create({
     fontFamily: "Poppins400",
     fontSize: 16,
     color: colors.text,
+  },
+  list: {
+    flex: 1,
+    paddingHorizontal: 16,
+    marginTop: 16,
+  },
+  videoItemContainer: {
+    flexDirection: "row",
+    marginBottom: 16,
+    backgroundColor: colors.white,
+    borderRadius: 8,
+    overflow: "hidden",
+    elevation: 2,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.22,
+    shadowRadius: 2.22,
+  },
+  thumbnail: {
+    width: 120,
+    height: 90,
+  },
+  videoInfoContainer: {
+    flex: 1,
+    padding: 12,
+    justifyContent: "center",
+  },
+  videoTitle: {
+    fontFamily: "Poppins600",
+    fontSize: 14,
+    color: colors.text,
+    marginBottom: 4,
+  },
+  channelName: {
+    fontFamily: "Poppins400",
+    fontSize: 12,
+    color: colors.text,
+    marginBottom: 4,
+  },
+  videoDate: {
+    fontFamily: "Poppins400",
+    fontSize: 12,
+    color: colors.text,
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  modalContent: {
+    backgroundColor: colors.cream,
+    padding: 24,
+    borderRadius: 16,
+    width: "80%",
+  },
+  modalTitle: {
+    fontFamily: "Poppins600",
+    fontSize: 18,
+    color: colors.text,
+    marginBottom: 24,
+  },
+  sortOption: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+  },
+  radioButton: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: colors.text,
+    alignItems: "center",
+    justifyContent: "center",
+    marginRight: 12,
+  },
+  radioButtonInner: {
+    width: 12,
+    height: 12,
+    borderRadius: 6,
+    backgroundColor: colors.text,
+  },
+  sortOptionText: {
+    fontFamily: "Poppins400",
+    fontSize: 16,
+    color: colors.text,
+  },
+  confirmButton: {
+    backgroundColor: colors.text,
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 24,
+  },
+  confirmButtonText: {
+    fontFamily: "Poppins600",
+    fontSize: 16,
+    color: colors.white,
   },
 });

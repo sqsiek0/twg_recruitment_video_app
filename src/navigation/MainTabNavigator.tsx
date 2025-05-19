@@ -12,7 +12,7 @@ import SearchIcon from "../assets/images/search-icon.svg";
 
 export type MainTabParamList = {
   HomeTab: undefined;
-  SearchTab: undefined;
+  SearchTab: { query: string; maxResults?: number };
 };
 
 const Tab = createBottomTabNavigator<MainTabParamList>();

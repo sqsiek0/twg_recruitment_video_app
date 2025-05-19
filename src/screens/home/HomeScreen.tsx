@@ -131,7 +131,11 @@ export function HomeScreen({ navigation }: Props) {
     <View style={styles.section}>
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>{title}</Text>
-        <TouchableOpacity onPress={() => console.log("Show more pressed")}>
+        <TouchableOpacity
+          onPress={() =>
+            navigation.navigate("SearchTab", { query: title, maxResults: 50 })
+          }
+        >
           <Text style={styles.sectionAction}>Show more</Text>
         </TouchableOpacity>
       </View>
