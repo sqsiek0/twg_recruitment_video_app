@@ -1,0 +1,13 @@
+GEM
+  remote: https://rubygems.org/
+  specs:
+    cocoapods-swift-modular-headers (0.0.2)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  cocoapods-swift-modular-headers
+
+BUNDLED WITH
+   1.17.2

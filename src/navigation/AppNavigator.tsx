@@ -8,7 +8,7 @@ import VideoDetailsScreen from "../screens/video/VideoDetailsScreen";
 
 export type RootStackParamList = {
   Login: undefined;
-  Main: undefined; // Zmieniamy Home na Main, gdzie Main będzie zawierał nawigację zakładek
+  Main: undefined;
   VideoDetailsScreen: { videoId: string };
 };
 
@@ -34,7 +34,7 @@ export default function AppNavigator() {
           name="VideoDetailsScreen"
           component={VideoDetailsScreen}
           options={{
-            headerShown: true,
+            headerShown: false,
             title: "Szczegóły wideo",
             headerTitleStyle: {
               fontFamily: "Poppins-Medium",

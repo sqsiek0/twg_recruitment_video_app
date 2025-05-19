@@ -41,6 +41,7 @@ export default function MainTabNavigator() {
         tabBarActiveTintColor: colors.oliveGreen,
         tabBarInactiveTintColor: colors.text,
         tabBarStyle: styles.tabBar,
+        animation: "shift",
         tabBarLabel: ({ focused, color }) => (
           <Text
             style={[
@@ -75,7 +76,7 @@ const styles = StyleSheet.create({
   tabBar: {
     backgroundColor: colors.white,
     borderTopWidth: 1,
-    borderTopColor: "rgba(0, 0, 0, 0.1)",
+    borderTopColor: colors.text,
     paddingBottom: Platform.OS === "ios" ? 20 : 10,
     paddingTop: 10,
     height: Platform.OS === "ios" ? 85 : 65,

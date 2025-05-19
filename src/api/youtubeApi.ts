@@ -25,6 +25,11 @@ export interface YouTubeVideo {
     high: { url: string; width: number; height: number };
   };
   channelTitle: string;
+  statistics?: {
+    viewCount?: string;
+    likeCount?: string;
+  };
+  tags?: string[];
 }
 
 export interface YouTubeSearchResponse {
@@ -63,6 +68,7 @@ const mapSearchResultToVideo = (item: any): YouTubeVideo => {
     publishedAt: item.snippet.publishedAt,
     thumbnails: item.snippet.thumbnails,
     channelTitle: item.snippet.channelTitle,
+    tags: item.snippet.tags || [],
   };
 };
 
@@ -93,8 +99,10 @@ export const youtubeApi = {
       const response = await youtubeClient.get('/videos', {
         params: {
           id: videoId,
+          part: 'snippet,statistics,contentDetails',
         },
       });
+      
 
       const data = response.data;
       if (data.items && data.items.length > 0) {
@@ -106,6 +114,11 @@ export const youtubeApi = {
           publishedAt: item.snippet.publishedAt,
           thumbnails: item.snippet.thumbnails,
           channelTitle: item.snippet.channelTitle,
+          tags: item.snippet.tags || [],
+          statistics: item.statistics || {
+            viewCount: "0",
+            likeCount: "0",
+          },
         };
       }
       return null;
