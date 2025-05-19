@@ -6,7 +6,6 @@ import { HomeScreen } from "../screens/home/HomeScreen";
 import { SearchScreen } from "../screens/search/SearchScreen";
 import { SvgProps } from "react-native-svg";
 
-// Importujemy ikony
 import HomeIcon from "../assets/images/home-icon.svg";
 import SearchIcon from "../assets/images/search-icon.svg";
 

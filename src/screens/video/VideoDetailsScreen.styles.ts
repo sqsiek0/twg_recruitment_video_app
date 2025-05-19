@@ -13,7 +13,7 @@ export const styles = StyleSheet.create({
   },
   videoContainer: {
     width: WINDOW_WIDTH,
-    height: (WINDOW_WIDTH * 9) / 16, // Aspekt 16:11
+    height: (WINDOW_WIDTH * 9) / 16,
     backgroundColor: "#000",
     position: "relative",
   },
@@ -121,14 +121,6 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     marginHorizontal: 40,
   },
-//   controlButton: {
-//     width: 50,
-//     height: 50,
-//     borderRadius: 25,
-//     backgroundColor: "rgba(50,50,50,0.7)",
-//     justifyContent: "center",
-//     alignItems: "center",
-//   },
   titleContainer: {
     padding: 16,
   },

@@ -35,12 +35,11 @@ const VideoDetailsScreen = ({ route, navigation }: Props) => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [activeTab, setActiveTab] = useState<"details" | "notes">("details");
-  const insets = useSafeAreaInsets(); // Pobieramy informacje o bezpiecznym obszarze
+  const insets = useSafeAreaInsets();
   const [controlsVisible, setControlsVisible] = useState(true);
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
-  // Stan dla kontroli głośności
   const [volume, setVolume] = useState(1.0);
 
   const { videoId } = route.params;
@@ -161,7 +160,6 @@ const VideoDetailsScreen = ({ route, navigation }: Props) => {
     }
   };
 
-  // Funkcja do przełączania wyciszenia dźwięku
   const handleToggleMute = () => {
     setVolume((prevVolume) => (prevVolume > 0 ? 0 : 1.0));
     showControls();

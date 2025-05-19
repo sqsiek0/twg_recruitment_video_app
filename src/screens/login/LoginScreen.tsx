@@ -1,4 +1,3 @@
-// src/screens/login/LoginScreen.tsx
 import React from "react";
 import { Text, View, Linking } from "react-native";
 import { TouchableOpacity } from "react-native";
