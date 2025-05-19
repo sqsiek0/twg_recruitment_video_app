@@ -1,6 +1,7 @@
 import { useFonts } from "expo-font";
 import AppNavigator from "./src/navigation/AppNavigator";
 import { ActivityIndicator, View } from "react-native";
+import { QueryProvider } from "./src/api/queryProvider";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -23,5 +24,9 @@ export default function App() {
     );
   }
 
-  return <AppNavigator />;
+  return (
+    <QueryProvider>
+      <AppNavigator />
+    </QueryProvider>
+  );
 }
