@@ -2,6 +2,20 @@
 
 This is my recruitment project for The Widlarz Group, showcasing a video presentation app that I developed. Below, I’ll document the challenges I encountered and the solutions I implemented.
 
+## How to run it?
+
+1. Choose a suitable location on your computer and run `git clone https://github.com/sqsiek0/twg_recruitment_video_app.git`
+2. Install the required packages with npm install
+3. Since an API key is needed, you must create a .env file
+```
+  1. Open the project in your IDE  
+  2. Create a `.env` file  
+  3. Add the variable YOUTUBE_API_KEY=YourKeyHere  
+```
+4. Launch the project using the command npx expo
+5. Press the “s” key to enable development mode
+6. Choose a platform
+
 ## First Impressions with Expo and React Native
 
 I didn’t expect it to work this seamlessly. This is my first time working with tools like these, and I’m genuinely impressed that I can launch the app on my phone just by scanning a QR code. The speed at which changes are applied is remarkable, and I’m pleasantly surprised by how responsive everything feels. I’m excited to see what else will amaze me.
@@ -82,5 +96,3 @@ Here, we fetch a larger set of videos, but not all of them are displayed because
 </p>
 
 ------
-
-## How to run it?
