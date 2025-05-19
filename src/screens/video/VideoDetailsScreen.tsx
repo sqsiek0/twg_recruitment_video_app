@@ -40,6 +40,9 @@ const VideoDetailsScreen = ({ route, navigation }: Props) => {
   const controlsTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
 
+  // Stan dla kontroli głośności
+  const [volume, setVolume] = useState(1.0);
+
   const { videoId } = route.params;
   const { data: videoDetails, isLoading, error } = useVideoDetails(videoId);
 
@@ -158,6 +161,13 @@ const VideoDetailsScreen = ({ route, navigation }: Props) => {
     }
   };
 
+  // Funkcja do przełączania wyciszenia dźwięku
+  const handleToggleMute = () => {
+    setVolume((prevVolume) => (prevVolume > 0 ? 0 : 1.0));
+    showControls();
+    hideControlsWithDelay();
+  };
+
   useEffect(() => {
     if (!paused) {
       hideControlsWithDelay();
@@ -268,6 +278,10 @@ const VideoDetailsScreen = ({ route, navigation }: Props) => {
               onError={onError}
               controls={false}
               repeat={false}
+              volume={volume}
+              onVolumeChange={() => {
+                console.log("Volume changed to:", volume);
+              }}
               onFullscreenPlayerWillDismiss={onFullscreenPlayerWillDismiss}
               onFullscreenPlayerDidPresent={onFullscreenPlayerDidPresent}
             />
@@ -291,8 +305,18 @@ const VideoDetailsScreen = ({ route, navigation }: Props) => {
                   <LeftArrowIcon width={20} height={20} />
                 </TouchableOpacity>
 
-                <View style={styles.controlsRight}>
-                  <TouchableOpacity style={styles.iconButton}>
+                <View style={[styles.controlsRight]}>
+                  <TouchableOpacity
+                    style={[
+                      styles.iconButton,
+                      volume == 0
+                        ? {
+                            backgroundColor: colors.clay,
+                          }
+                        : {},
+                    ]}
+                    onPress={handleToggleMute}
+                  >
                     <VolumeIcon width={20} height={20} />
                   </TouchableOpacity>
                   <TouchableOpacity style={[styles.iconButton, {}]}>

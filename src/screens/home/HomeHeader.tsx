@@ -13,11 +13,15 @@ import { useNavigation } from "@react-navigation/native";
 
 export default function HomeHeader() {
   const [searchQuery, setSearchQuery] = useState("");
-  const navigation = useNavigation();
+  const navigation = useNavigation<any>();
 
   const handleSearch = () => {
     if (searchQuery.trim().length > 0) {
-      console.log("Szukaj:", searchQuery);
+      navigation.navigate("SearchTab", {
+        query: searchQuery.trim(),
+        maxResults: 20,
+      });
+      setSearchQuery("");
     }
   };
 

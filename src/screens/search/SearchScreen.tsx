@@ -22,6 +22,7 @@ import {
   TouchableOpacity,
   ActivityIndicator,
 } from "react-native";
+import { useDebounce } from "../../utils/useDebounce";
 import VideoCard from "./components/VideoCard";
 
 type SearchScreenRouteProp = RouteProp<MainTabParamList, "SearchTab">;
@@ -39,13 +40,15 @@ export const SearchScreen: React.FC = () => {
   const [orderParam, setOrderParam] = useState("viewCount");
   const [reverseChronology, setReverseChronology] = useState(false);
 
+  const debouncedSearchQuery = useDebounce(searchQuery, 500);
+
   const {
     data: searchData,
     isLoading,
     error,
     refetch,
   } = useSearchVideos(
-    searchQuery,
+    debouncedSearchQuery,
     initialMaxResults,
     orderParam,
     reverseChronology
@@ -64,9 +67,14 @@ export const SearchScreen: React.FC = () => {
     }
   }, [initialQuery, refetch]);
 
+  React.useEffect(() => {
+    if (debouncedSearchQuery && debouncedSearchQuery.trim() !== "") {
+      refetch();
+    }
+  }, [debouncedSearchQuery, refetch]);
+
   const handleSearch = () => {
     if (searchQuery.trim() !== "") {
-      // @ts-ignore
       refetch();
     }
   };
@@ -138,7 +146,8 @@ export const SearchScreen: React.FC = () => {
         <StatusBar style="auto" />
         <View style={styles.resultsWrapper}>
           <Text style={styles.resultsText}>
-            {totalResults} results found for: "{searchQuery || "React Native"}"
+            {totalResults} results found for
+            {searchQuery.trim() !== "" ? `: "${searchQuery}"` : ":"}
           </Text>
         </View>
         <TouchableOpacity onPress={handleSortPress} style={styles.sortWrapper}>
